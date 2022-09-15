@@ -1,0 +1,15 @@
+@import 'react-pro-sidebar/dist/css/styles.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer components {
+    .tbm-sidebar-nav-item>.collapse .collapse-title {
+        @apply py-0 h-min;
+    }
+
+    .mark {
+        @apply border border-red-500;
+    }
+}

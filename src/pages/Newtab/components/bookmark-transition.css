@@ -1,0 +1,17 @@
+.bi-enter {
+    opacity: 0;
+}
+
+.bi-enter-active {
+    opacity: 1;
+    transition: opacity 500ms;
+}
+
+.bi-exit {
+    opacity: 1;
+}
+
+.bi-exit-active {
+    opacity: 0;
+    transition: opacity 500ms;
+}
