@@ -38,7 +38,7 @@ function TopSites() {
                     {
                         topSites.length > 0 ?
                             topSites.map((ts, index) => {
-                                return <a href={ts.url} className='inline-block w-12 h-12 rounded p-2 shadow shadow-primary/20 tooltip hover:scale-110 hover:shadow-lg hover:shadow-primary/20 transition duration-200' data-tip={ts.title} key={index}>
+                                return <a href={ts.url} className='inline-block w-12 h-12 rounded p-2 shadow shadow-primary/20 border border-primary/30 tooltip hover:scale-110 hover:shadow-lg hover:shadow-primary/20 transition duration-200' data-tip={ts.title} key={index}>
                                     <div>
                                         <img className='max-w-full' src={ts.favicon} alt={ts.title} />
                                     </div>

@@ -5,19 +5,18 @@ import BookmarkCard from './BookmarkCard';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './bookmark-transition.css'
 import { BookmarkContext } from '../context/BookmarkProvider';
-import { filterBookmarks, isBookmarkBelongsCollection } from '../lib/utils';
-import { MdSort } from 'react-icons/md';
-import TopSites from './TopSites';
-import CreateCollection from './CreateCollection';
+import { filterBookmarks, isBookmarkBelongsCollection, parseTitleUrlFromDragEvent } from '../lib/utils';
 import CollectionAction from './CollectionAction';
 
 function CollectionLoader() {
-    const { selectedCollection, searchData, searching } = useContext(BookmarkContext);
+    const { selectedCollection, searchData, searching, createBookmark } = useContext(BookmarkContext);
     const [bookmarks, setBookmarks] = useState<chrome.bookmarks.BookmarkTreeNode[]>([]);
+    const [dragEnter, setDragEnter] = useState(false);
+    // const [selectedForMove, setSelectedForMove]
 
     const init = () => {
         if (!selectedCollection) return setBookmarks([]);
-        chrome.bookmarks.getChildren(selectedCollection.id, result => setBookmarks([...filterBookmarks(result)]))
+        chrome.bookmarks.getChildren(selectedCollection.id, result => setBookmarks([...filterBookmarks(result).sort((a, b) => b.index! - a.index!)]))
 
     }
 
@@ -31,6 +30,20 @@ function CollectionLoader() {
         init();
     }
 
+    const handleOnMoveBookmark = async (id: string, moveInfo: chrome.bookmarks.BookmarkMoveInfo) => {
+        if(moveInfo.oldParentId === selectedCollection?.id){
+            setBookmarks((prev) => [...prev.filter(b => b.id !== id)]);
+            return
+        }
+        if(moveInfo.parentId === selectedCollection?.id){
+            const bookmarks = await chrome.bookmarks.get(id);
+            if(bookmarks.length > 0){
+                setBookmarks(prev => [...prev,bookmarks[0]]);
+            }
+        }
+    }
+ 
+
     useEffect(() => {
         if (searching && searchData) {
             setBookmarks([...searchData])
@@ -42,10 +55,12 @@ function CollectionLoader() {
         init();
         chrome.bookmarks.onCreated.addListener(handleOnCreateBookmark);
         chrome.bookmarks.onRemoved.addListener(handleOnRemoveBookmark);
+        chrome.bookmarks.onMoved.addListener(handleOnMoveBookmark)
 
         return (() => {
             chrome.bookmarks.onCreated.removeListener(handleOnCreateBookmark)
             chrome.bookmarks.onRemoved.removeListener(handleOnRemoveBookmark)
+            chrome.bookmarks.onMoved.removeListener(handleOnMoveBookmark)
         })
     }, [selectedCollection]);
 
@@ -61,11 +76,45 @@ function CollectionLoader() {
         }
     }
 
+
+    const handleOnDrop = (ev: React.DragEvent) => {
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
+            ev.preventDefault();
+            const obj = parseTitleUrlFromDragEvent(ev);
+            if (obj && selectedCollection) {
+                createBookmark && createBookmark({
+                    title: obj.title,
+                    url: obj.url,
+                    parentId: selectedCollection.id
+                })
+            }
+            setDragEnter(false);
+        }
+    }
+
+    const handleOnDragOver = (ev: React.DragEvent) => {
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
+            ev.preventDefault();
+            if (!dragEnter) setDragEnter(true);
+        }
+    }
+    const handleOnDragEnter = (ev: React.DragEvent) => {
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
+            ev.preventDefault();
+            if (!dragEnter) setDragEnter(true);
+        }
+    }
+    const handleOnDragLeave = (ev: React.DragEvent) => {
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
+            ev.preventDefault();
+            if (dragEnter) setDragEnter(false);
+        }
+    }
+
     return (
-        <div className='container mx-auto'>
+        <div className={`container mx-auto relative transition-all duration-200 h-full ${dragEnter ? 'border-2 border-primary' : ''}`} onDrop={handleOnDrop} onDragOver={handleOnDragOver} onDragEnter={handleOnDragEnter} onDragLeave={handleOnDragLeave}>
             <div className="flex item-center justify-between px-5">
-                <div className="flex items-center"><h1 className='text-2xl text-primary'>{selectedCollection?.title}</h1></div>
-                <div className='relative md:block hidden'><TopSites /></div>
+                <div className="flex items-center"><h1 className='text-2xl text-primary capitalize'>{selectedCollection?.title}</h1></div>
                 <div className='flex items-center gap-2'>
                     {/* <CreateCollection></CreateCollection> */}
                     <CollectionAction collection={selectedCollection || null} bookmarks={bookmarks} onSort={sort}></CollectionAction>
@@ -95,6 +144,7 @@ function CollectionLoader() {
                         <h1 className='max-w-sm text-3xl font-bold'>No Collection Selected</h1>
                     </div>
             }
+            
         </div>
     )
 }

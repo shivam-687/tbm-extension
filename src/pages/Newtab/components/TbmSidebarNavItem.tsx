@@ -14,6 +14,7 @@ export type TbmSidebarNavItemProps = {
     active?: boolean,
     link?: string,
     onActive?: (id: string) => void;
+    onOpen?: () => void;
 }
 
 
@@ -35,6 +36,7 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
     useEffect(() => {
         if (selectedCollection && selectedCollection.id === props.data.id) {
             setIsActive(true);
+            props.onOpen && props.onOpen();
         } else {
             setIsActive(false)
         }
@@ -58,8 +60,7 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
     const onRemoveHandler = (id: string, collection: chrome.bookmarks.BookmarkRemoveInfo) => {
         if (!isCollection(collection.node)) return;
         if (collection.parentId === props.data.id) {
-            setChildren((prev) => [...prev.filter(cl => cl.id === id)]);
-            // console.log("Collection removed", collection);
+            setChildren((prev) => [...prev.filter(cl => cl.id !== id)]);
         }
     }
 
@@ -73,22 +74,29 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
         })
     }, [])
 
+    const onChildOpen = () => {
+        if(!isCollapse) {
+            setIsCollapse(true);
+            props.onOpen && props.onOpen();
+        };
+    }
+
 
     return (
         <>
 
             <div className='px-2'>
-                <div className={`flex items-center justify-between py-2 px-2 rounded-md ${isActive && 'text-primary bg-primary/10'}`}>
+                <div className={`flex items-center  justify-between group py-2 px-2 rounded-md ${isActive ? 'text-primary bg-primary/10': 'text-base hover:text-primary'}`}>
                     <div className={`text-base flex items-center gap-2 cursor-pointer `} onClick={onSelect}>
 
-                        <span className={`inline-block text-xl  ${isActive ? 'text-primary' : 'text-gray-400'}`}>
+                        <span className={`inline-block text-xl transition duration-300  ${isActive ? 'text-primary' : 'text-gray-400 group-hover:text-primary'}`}>
                             {
                                 isCollapse
                                     ? <HiFolderOpen />
                                     : <HiFolder />
                             }
                         </span>
-                        <p className=' line-clamp-1 ' >{props.data.title}</p>
+                        <p className=' line-clamp-1 transition duration-300 capitalize' >{props.data.title}</p>
                     </div>
 
                     {
@@ -104,10 +112,10 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
                 {
                     (children && children.length > 0)
                     &&
-                    <div className={`${isCollapse ? 'h-full' : 'h-0'} transition-all duration-200 overflow-hidden`}>
+                    <div className={`${isCollapse ? 'h-full' : 'h-0'} transition-all duration-300 overflow-hidden`}>
                         {
                             children.map((b, index) => {
-                                return <TbmSidebarNavItem data={b} key={index} />
+                                return <div key={index} className={` transition-all  duration-200 ${isCollapse ? 'translate-x-0 opacity-100 delay-100': '-translate-x-2 opacity-0 delay-75'}`}><TbmSidebarNavItem data={b} onOpen={onChildOpen} /></div>
                             })
                         }
                     </div>

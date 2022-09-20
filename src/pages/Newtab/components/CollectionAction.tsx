@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { BiSortDown, BiFolderPlus, BiTrash, BiDotsVertical } from 'react-icons/bi';
 import { BookmarkContext } from '../context/BookmarkProvider';
+import Storage from '../lib/AppStorage';
 import CreateCollection from './CreateCollection';
 
 export type CollectionActionProps = {
@@ -43,7 +44,7 @@ function CollectionAction(props: CollectionActionProps) {
 
 
     const syncSortAction = async () => {
-        const actionData = await chrome.storage.sync.get('sortAction');
+        const actionData = await Storage.get('sortAction');
         if (Object.keys(actionData).length > 0) {
             setSortAction(actionData['sortAction']);
         } else {
@@ -72,7 +73,6 @@ function CollectionAction(props: CollectionActionProps) {
         }
 
         return sortData;
-
     }
 
     const handleSort = (ev: React.MouseEvent<HTMLLIElement>) => {
@@ -82,7 +82,7 @@ function CollectionAction(props: CollectionActionProps) {
     }
 
     const saveSortData = (action: string) => {
-        chrome.storage.sync.set({ sortAction: action });
+        Storage.set({ sortAction: action });
     }
 
     const deleteCollection = () => {
@@ -97,6 +97,10 @@ function CollectionAction(props: CollectionActionProps) {
             }
         })
 
+    }
+
+    const createQuickAccess = () => {
+        
     }
 
     return (

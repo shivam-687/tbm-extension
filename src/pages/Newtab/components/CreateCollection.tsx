@@ -3,6 +3,7 @@ import { HiFolder, HiFolderAdd } from 'react-icons/hi';
 import Modal from 'react-modal';
 import Fade from 'react-reveal/Fade';
 import { BookmarkContext } from '../context/BookmarkProvider';
+import { IoClose } from 'react-icons/io5';
 
 Modal.setAppElement('#app-container');
 
@@ -33,7 +34,7 @@ function CreateCollection(props: React.PropsWithChildren<{}>) {
         if (!selectedCollection) return setModalError("No Collection Selected!!");
         const createdBcollection = await chrome.bookmarks.create({
             parentId: selectedCollection.id,
-            title: inputData
+            title: inputData,
         });
         return createdBcollection;
 
@@ -66,16 +67,19 @@ function CreateCollection(props: React.PropsWithChildren<{}>) {
                 onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
                 closeTimeoutMS={500}
-                className="max-w-2xl w-full p-5 h-min bg-base-100 rounded-xl shadow-xl shadow-primary/20"
+                className="max-w-2xl w-full p-5 h-min bg-base-100 rounded-xl shadow-xl shadow-primary/20 relative"
                 contentLabel="Craete-Collection-Model"
                 overlayClassName={' bg-black/20 absolute w-full h-full top-0 left-0 flex items-center justify-center'}
                 parentSelector={() => document.querySelector('#apptab')!}
                 shouldCloseOnOverlayClick={false}
             >
 
-                <h1 className='text-2xl'>Create Collection</h1>
+                <div className='flex justify-between items-center'>
+                    <h1 className='text-2xl'>Create Collection</h1>
+                    <button onClick={closeModal} className='absolute right-2 top-2 btn btn-square text-2xl btn-outline' ><span><IoClose /></span></button>
+                </div>
 
-                <div className="form-control w-full mx-auto my-5">
+                <div className="form-control w-full mx-auto my-10">
 
                     <input type="text" placeholder="Type here" className="input input-bordered w-full" onChange={handleInputChange} />
                     {
@@ -85,9 +89,10 @@ function CreateCollection(props: React.PropsWithChildren<{}>) {
                     }
                 </div>
 
-                <div className="flex items-center justify-end">
-                    <button className='btn btn-secondary' onClick={handleSubmit}>Create</button>
+                <div className="flex gap-5 items-center justify-end">
+                    <button className='btn btn-primary' onClick={handleSubmit}>Create</button>
                 </div>
+
 
             </Modal>
         </>

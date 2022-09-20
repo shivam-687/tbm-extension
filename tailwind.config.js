@@ -7,7 +7,7 @@ module.exports = {
   daisyui: {
     themes: [
       {
-        mytheme: {
+        default: {
           primary: '#4338ca',
           'primary-content': '#fff',
 
@@ -61,5 +61,8 @@ module.exports = {
       'winter',
     ],
   },
-  plugins: [require('daisyui'), require('@tailwindcss/line-clamp')],
+  plugins: [require('daisyui'), require('@tailwindcss/line-clamp'), require('tailwind-scrollbar'),],
+  variants: {
+    scrollbar: ['rounded']
+}
 };
