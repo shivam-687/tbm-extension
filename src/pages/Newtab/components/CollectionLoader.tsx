@@ -113,7 +113,7 @@ function CollectionLoader() {
 
     return (
         <div className={`container mx-auto relative transition-all duration-200 h-full ${dragEnter ? 'border-2 border-primary' : ''}`} onDrop={handleOnDrop} onDragOver={handleOnDragOver} onDragEnter={handleOnDragEnter} onDragLeave={handleOnDragLeave}>
-            <div className="flex item-center justify-between px-5">
+            <div className="flex item-center justify-between px-5 mt-2">
                 <div className="flex items-center"><h1 className='text-2xl text-primary capitalize'>{selectedCollection?.title}</h1></div>
                 <div className='flex items-center gap-2'>
                     {/* <CreateCollection></CreateCollection> */}

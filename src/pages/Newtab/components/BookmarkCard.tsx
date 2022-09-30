@@ -27,7 +27,7 @@ const BookmarkCard = (props: BookmarkCardProps) => {
 
     useEffect(() => {
         getTreeList();
-        console.log("Colecte")
+        // console.log("Colecte")
     }, [])
 
 
@@ -98,10 +98,10 @@ const BookmarkCard = (props: BookmarkCardProps) => {
                 props.onMove && props.onMove(collectionId, { id: props.id, title: props.title, url: props.url, parentId: props.parentId, index: props.index });
                 return;
             }
-            const moved = await chrome.bookmarks.move(props.id, { parentId: collectionId! });
+            // const moved = await chrome.bookmarks.move(props.id, { parentId: collectionId! });
             props.onMove && props.onMove(collectionId, { id: props.id, title: props.title, url: props.url, parentId: props.parentId, index: props.index });
             closeModal();
-            console.log("Moved to: ", moved);
+            // console.log("Moved to: ", moved);
         } catch (error) {
             console.error(error);
         }
