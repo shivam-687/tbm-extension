@@ -5,7 +5,7 @@ import Fade from 'react-reveal/Fade';
 import { BookmarkContext } from '../context/BookmarkProvider';
 import { IoClose } from 'react-icons/io5';
 
-Modal.setAppElement('#app-container');
+// Modal.setAppElement('#app-container');
 
 function CreateCollection(props: React.PropsWithChildren<{}>) {
     const [modalIsOpen, setIsOpen] = React.useState(false);

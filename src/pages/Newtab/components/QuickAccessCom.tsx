@@ -5,7 +5,8 @@ import { parseTitleUrlFromDragEvent } from '../lib/utils';
 import { getFaviconUrl } from '../../../helpers';
 import './bookmark-transition.css';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import {AiFillSetting} from 'react-icons/ai';
+import { AiFillSetting } from 'react-icons/ai';
+import Settings from './Settings';
 
 function QuickAccessCom() {
     const [qaList, setQaList] = useState<QuickAccessContent[]>([]);
@@ -48,10 +49,10 @@ function QuickAccessCom() {
     }, []);
 
     const handleOnDrop = (ev: React.DragEvent) => {
-        if(ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')){
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
             ev.preventDefault();
             const obj = parseTitleUrlFromDragEvent(ev);
-            if(obj){
+            if (obj) {
                 const data: CreateQuickAccess = {
                     title: obj.title,
                     url: obj.url,
@@ -64,39 +65,41 @@ function QuickAccessCom() {
     }
 
 
-    const handleOnDragOver = (ev: React.DragEvent) =>{
-        if(ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')){
+    const handleOnDragOver = (ev: React.DragEvent) => {
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
             ev.preventDefault();
-            if(!dragEnter) setDragEnter(true);
+            if (!dragEnter) setDragEnter(true);
         }
     }
-    const handleOnDragEnter = (ev: React.DragEvent) =>{
-        if(ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')){
+    const handleOnDragEnter = (ev: React.DragEvent) => {
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
             ev.preventDefault();
-            if(!dragEnter) setDragEnter(true);
+            if (!dragEnter) setDragEnter(true);
         }
     }
-    const handleOnDragLeave = (ev: React.DragEvent) =>{
-        if(ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')){
+    const handleOnDragLeave = (ev: React.DragEvent) => {
+        if (ev.dataTransfer.types.includes('text/uri-list') && ev.dataTransfer.types.includes('text/html')) {
             ev.preventDefault();
-            if(dragEnter) setDragEnter(false);
+            if (dragEnter) setDragEnter(false);
         }
     }
 
 
 
     return (
-        <div  className={`flex flex-col  relative  bg-primary-focus transition duration-200 h-full scrollbar-thin scrollbar-track-primary/20 scrollbar-thumb-primary scrollbar-thumb-rounded-full  ${dragEnter ? 'bg-primary/40':'bg-primary-focus'}`} onDragOver={handleOnDragOver} onDrop={handleOnDrop} onDragEnter={handleOnDragEnter} onDragLeave={handleOnDragLeave}>
+        <div className={`flex flex-col  relative  bg-primary-focus transition duration-200 h-full scrollbar-thin scrollbar-track-primary/20 scrollbar-thumb-primary scrollbar-thumb-rounded-full  ${dragEnter ? 'bg-primary/40' : 'bg-primary-focus'}`} onDragOver={handleOnDragOver} onDrop={handleOnDrop} onDragEnter={handleOnDragEnter} onDragLeave={handleOnDragLeave}>
             {/* <div className='flex-grow-0 w-full h-2 bg-primary'></div> */}
-            <TransitionGroup className='flex flex-grow flex-col gap-3 justify-start overflow-y-auto scrollbar-none px-2 pt-5'>
-            {
-                qaList.map((qa, index) => <CSSTransition timeout={700} classNames='bi' className="tooltip tooltip-left" data-tip={qa.title} key={index} ><QaTile qa={qa} /></CSSTransition>)
-            }
+            <TransitionGroup className='flex flex-grow flex-col gap-3 justify-start overflow-y-auto overflow-x-auto scrollbar-none px-2 pt-5'>
+                {
+                    qaList.map((qa, index) => <CSSTransition timeout={700} classNames='bi' className="tooltip tooltip-left" data-tip={qa.title} key={index} ><QaTile qa={qa} /></CSSTransition>)
+                }
             </TransitionGroup>
             <div className=' py-4 border-t-2 border-primary-content w-full flex justify-center flex-grow-0'>
-                <QaTile disableClose>
-                    <span className='text-3xl w-full h-full flex cursor-pointer text-primary-content items-center pb-[6px] justify-center'><AiFillSetting/></span>
-                </QaTile>
+                <Settings>
+                    <QaTile closable>
+                        <span className='text-3xl w-full h-full flex cursor-pointer text-primary-content items-center pb-[6px] justify-center'><AiFillSetting /></span>
+                    </QaTile>
+                </Settings>
             </div>
         </div>
     )

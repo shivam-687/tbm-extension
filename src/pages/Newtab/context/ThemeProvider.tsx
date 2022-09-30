@@ -44,6 +44,8 @@ const themeList: string[] = [
     'night',
     'coffee',
     'winter',
+    'greeny',
+    'pinkoo'
 ]
 
 

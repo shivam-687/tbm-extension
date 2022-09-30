@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { createRef, useRef } from 'react';
 import { useContext } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -23,6 +23,8 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
     const { select, selectedCollection } = useContext(BookmarkContext);
     const [isActive, setIsActive] = useState(false);
     const [isCollapse, setIsCollapse] = useState(false);
+    const [scrollHeight, setScrollHeight] = useState<number>(0)
+    const pref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
         if (props.data.children && props.data.children.length > 0) {
@@ -74,6 +76,7 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
         })
     }, [])
 
+
     const onChildOpen = () => {
         if(!isCollapse) {
             setIsCollapse(true);
@@ -85,7 +88,7 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
     return (
         <>
 
-            <div className='px-2'>
+            <div className='px-2' >
                 <div className={`flex items-center  justify-between group py-2 px-2 rounded-md ${isActive ? 'text-primary bg-primary/10': 'text-base hover:text-primary'}`}>
                     <div className={`text-base flex items-center gap-2 cursor-pointer `} onClick={onSelect}>
 
@@ -112,10 +115,10 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
                 {
                     (children && children.length > 0)
                     &&
-                    <div className={`${isCollapse ? 'h-full' : 'h-0'} transition-all duration-300 overflow-hidden`}>
+                    <div ref={pref} className={` transition-all overflow-hidden`} style={{transitionDuration: children.length > 0 ? `${(children.length * 20) + 50}ms`:'300ms', height: isCollapse?`${pref.current?.scrollHeight ? pref.current?.scrollHeight+'px': '100%'}`:'0px'}}>
                         {
                             children.map((b, index) => {
-                                return <div key={index} className={` transition-all  duration-200 ${isCollapse ? 'translate-x-0 opacity-100 delay-100': '-translate-x-2 opacity-0 delay-75'}`}><TbmSidebarNavItem data={b} onOpen={onChildOpen} /></div>
+                                return <div key={index} style={{transitionDelay: `${index * 50}ms`}} className={` transition-all  duration-200  ${isCollapse ? 'translate-y-0 opacity-100': '-translate-y-2 opacity-0'}`}><TbmSidebarNavItem data={b} onOpen={onChildOpen} /></div>
                             })
                         }
                     </div>

@@ -8,7 +8,7 @@ import Modal from 'react-modal';
 import { IoClose } from 'react-icons/io5';
 import { HiFolder, HiFolderOpen } from 'react-icons/hi';
 
-Modal.setAppElement('#app-container');
+// Modal.setAppElement('#app-container');
 
 export interface BookmarkCardProps extends chrome.bookmarks.BookmarkTreeNode {
     onDelete?: (bookmark: chrome.bookmarks.BookmarkTreeNode) => void;

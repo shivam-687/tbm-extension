@@ -4,8 +4,8 @@ import React from 'react'
 
 function Logo() {
     return (
-        <div className="p-2 rounded-md bg-white text-primary font-black text-3xl w-full">
-            <img src="logo-big.svg" alt="Tabmarker logo" className='max-w-full' />
+        <div className="p-2 rounded-md bg-white text-primary font-black text-3xl w-full border">
+            <img src="tbm-logo-v2-long.png" alt="Tabmarker logo" className='max-w-full' />
             {/* <LogoSvg/> */}
         </div>
     )

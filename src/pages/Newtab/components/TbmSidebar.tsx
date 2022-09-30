@@ -43,7 +43,7 @@ function TbmSidebar() {
 
     return (
         <>
-            <div className='w-60 h-full relative border-r border-r-base-200 hidden md:block'>
+            <div className='w-60 h-full pb-5 overflow-y-auto relative border-r border-r-base-200 hidden md:block scrollbar-thin scrollbar-track-primary/50 scrollbar-thumb-primary scrollbar-thumb-rounded-full'>
                 {sidebarContent}
             </div>
             <div className="block md:hidden z-50">
@@ -51,9 +51,10 @@ function TbmSidebar() {
                     open={isSidebarOpen}
                     onClose={toggleSideBar}
                     direction='left'
-                    className='bla bla bla'
+                    className='z-50'
+
                 >
-                    <div className='bg-base-200 h-full'>
+                    <div className='bg-base-200 h-full overflow-y-auto scrollbar-thin scrollbar-track-primary/50 scrollbar-thumb-primary scrollbar-thumb-rounded-full'>
                         {sidebarContent}
                     </div>
                 </Drawer>
