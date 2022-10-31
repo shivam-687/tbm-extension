@@ -15,6 +15,7 @@ export type TbmSidebarNavItemProps = {
     link?: string,
     onActive?: (id: string) => void;
     onOpen?: () => void;
+    onChange?: () => void;
 }
 
 
@@ -23,7 +24,8 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
     const { select, selectedCollection } = useContext(BookmarkContext);
     const [isActive, setIsActive] = useState(false);
     const [isCollapse, setIsCollapse] = useState(false);
-    const [scrollHeight, setScrollHeight] = useState<number>(0)
+    const [scrollHeight, setScrollHeight] = useState<number>()
+    const colTitleRef = useRef<HTMLParagraphElement>(null);
     const pref = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
@@ -34,6 +36,7 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
             setChildren(childs);
         }
     }, [props.data]);
+
 
     useEffect(() => {
         if (selectedCollection && selectedCollection.id === props.data.id) {
@@ -50,13 +53,20 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
 
     const toggleCollapse = () => {
         setIsCollapse(() => !isCollapse);
+        updateScrollHeight();
+        props.onChange && props.onChange();
+    }
+
+    const onCollectionTitleUpdate = (id: string, changeInfo: chrome.bookmarks.BookmarkChangeInfo) => {
+        if(props.data.id === id && colTitleRef.current){
+            colTitleRef.current.textContent = changeInfo.title;
+        }
     }
 
     const onCreateHandler = (id: string, collection: chrome.bookmarks.BookmarkTreeNode) => {
         if (!isCollection(collection)) return;
         if (collection.parentId === props.data.id) {
             setChildren((prev) => [...prev, collection]);
-            // console.log("Collection created",);
         }
     }
     const onRemoveHandler = (id: string, collection: chrome.bookmarks.BookmarkRemoveInfo) => {
@@ -69,10 +79,12 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
     useEffect(() => {
         chrome.bookmarks.onCreated.addListener(onCreateHandler);
         chrome.bookmarks.onRemoved.addListener(onRemoveHandler);
-
+        chrome.bookmarks.onChanged.addListener(onCollectionTitleUpdate);
+        updateScrollHeight();
         return (() => {
             chrome.bookmarks.onCreated.removeListener(onCreateHandler);
             chrome.bookmarks.onRemoved.removeListener(onRemoveHandler);
+            chrome.bookmarks.onChanged.removeListener(onCollectionTitleUpdate);
         })
     }, [])
 
@@ -82,6 +94,20 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
             setIsCollapse(true);
             props.onOpen && props.onOpen();
         };
+    }
+
+    const onChildChange = () => {
+        console.log("My children changed", props.data.title)
+        setTimeout(() => {
+            updateScrollHeight();
+            setTimeout(() => {
+                console.log("Updated Scroll height", pref.current?.clientHeight);
+            }, 100);
+        }, 100);
+    }
+
+    const updateScrollHeight = () =>{
+        setScrollHeight(pref.current?.scrollHeight);
     }
 
 
@@ -99,7 +125,7 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
                                     : <HiFolder />
                             }
                         </span>
-                        <p className=' line-clamp-1 transition duration-300 capitalize' >{props.data.title}</p>
+                        <p ref={colTitleRef} className=' line-clamp-1 transition duration-300 capitalize' >{props.data.title}</p>
                     </div>
 
                     {
@@ -115,10 +141,10 @@ function TbmSidebarNavItem(props: TbmSidebarNavItemProps) {
                 {
                     (children && children.length > 0)
                     &&
-                    <div ref={pref} className={` transition-all overflow-hidden`} style={{transitionDuration: children.length > 0 ? `${(children.length * 20) + 50}ms`:'300ms', height: isCollapse?`${pref.current?.scrollHeight ? pref.current?.scrollHeight+'px': '100%'}`:'0px'}}>
+                    <div ref={pref} className={` transition-all overflow-hidden`} style={{ height: isCollapse?`100%`:'0px'}}>
                         {
                             children.map((b, index) => {
-                                return <div key={index} style={{transitionDelay: `${index * 50}ms`}} className={` transition-all  duration-200  ${isCollapse ? 'translate-y-0 opacity-100': '-translate-y-2 opacity-0'}`}><TbmSidebarNavItem data={b} onOpen={onChildOpen} /></div>
+                                return <div key={index} style={{transitionDelay: `${index * 50}ms`}} className={` transition-all  duration-200 `}><TbmSidebarNavItem data={b} onOpen={onChildOpen} onChange={onChildChange} /></div>
                             })
                         }
                     </div>

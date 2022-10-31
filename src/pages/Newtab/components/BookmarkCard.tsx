@@ -1,4 +1,4 @@
-import React, { createRef, MouseEvent, useEffect, useRef, useState } from 'react';
+import React, { MouseEvent, useEffect, useRef, useState } from 'react';
 import { getFaviconUrl } from '../../../helpers';
 import { FiMoreVertical } from 'react-icons/fi';
 import 'react-dropdown/style.css';
@@ -6,7 +6,7 @@ import QuickAccess, { QuickAccessContent } from '../lib/QuickAccess';
 import { getTreeList } from '../lib/utils';
 import Modal from 'react-modal';
 import { IoClose } from 'react-icons/io5';
-import { HiFolder, HiFolderOpen } from 'react-icons/hi';
+import { HiFolder } from 'react-icons/hi';
 
 // Modal.setAppElement('#app-container');
 
@@ -164,9 +164,9 @@ const BookmarkCard = (props: BookmarkCardProps) => {
                     </div>
                 </div>
 
-                <div className='flex-grow '>
-                    <a href={props.url} className={`text-lg line-clamp-1  text-left ${editMode ? 'cursor-text' : 'cursor-pointer'}`} onClick={openTab} contentEditable={editMode} ref={titleRef} suppressContentEditableWarning>{props.title}</a>
-                    <p ref={urlRef} className={`${editMode ? 'block' : 'hidden'}`} contentEditable={editMode} suppressContentEditableWarning>{props.url}</p>
+                <div className='flex-grow overflow-x-auto'>
+                    <a href={props.url} className={` max-w-full text-lg line-clamp-1  text-left ${editMode ? 'cursor-text' : 'cursor-pointer'}`} onClick={openTab} contentEditable={editMode} ref={titleRef} suppressContentEditableWarning>{props.title}</a>
+                    <p ref={urlRef} className={`max-w-full ${editMode ? 'block' : 'hidden'}`} contentEditable={editMode} suppressContentEditableWarning>{props.url}</p>
                 </div>
 
                 <div className="inline-flex items-center flex-grow-0 ">

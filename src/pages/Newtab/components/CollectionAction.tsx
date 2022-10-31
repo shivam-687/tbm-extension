@@ -107,7 +107,7 @@ function CollectionAction(props: CollectionActionProps) {
         <div className="dropdown dropdown-left">
             <label tabIndex={0} className="btn btn-square btn-outline text-xl"><span><BiDotsVertical /></span></label>
             <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><CreateCollection><span className='text-base flex items-center'><span className='text-2xl mr-2'><BiFolderPlus /></span> Create Collection</span></CreateCollection></li>
+                <li><CreateCollection><span className='text-base flex items-center'><span className='text-2xl mr-2'><BiFolderPlus /></span> Add Collection</span></CreateCollection></li>
                 {/* <li tabIndex={0} className="dropdown-start">
                     <span className="text-base">Sort</span>
                     <ul className="bg-base-100">

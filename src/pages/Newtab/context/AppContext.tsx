@@ -2,6 +2,7 @@ import React from 'react';
 
 export interface AppContextParam {
     selectedCollection?: chrome.bookmarks.BookmarkTreeNode,
+    isCollectionEditing?: boolean,
     select?: (collection: chrome.bookmarks.BookmarkTreeNode | null) => void;
     isSidebarOpen?: boolean;
     restoreSelectedCollection?: () => void;
@@ -9,6 +10,7 @@ export interface AppContextParam {
     setSearchData?: (data: chrome.bookmarks.BookmarkTreeNode[]) => void;
     searching?: boolean;
     setSearching?: (val: boolean) => void
+    setIsCollectionEditing?: (val: boolean) => void
 }
 
 const AppContext = React.createContext<AppContextParam>({});
