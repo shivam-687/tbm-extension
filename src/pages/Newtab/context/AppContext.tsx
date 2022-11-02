@@ -10,7 +10,9 @@ export interface AppContextParam {
     setSearchData?: (data: chrome.bookmarks.BookmarkTreeNode[]) => void;
     searching?: boolean;
     setSearching?: (val: boolean) => void
-    setIsCollectionEditing?: (val: boolean) => void
+    setIsCollectionEditing?: (val: boolean) => void,
+    currentView?: string,
+    setCurrentView?: (viewName: string) => void
 }
 
 const AppContext = React.createContext<AppContextParam>({});
